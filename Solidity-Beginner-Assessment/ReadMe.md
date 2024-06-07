@@ -4,11 +4,11 @@ This Solidity program is a “MyToken” program that demonstrates the basic syn
 
 ## Description 
 
-MyToken is a basic Solidity smart contract that lets you create and manage your own custom token on the Ethereum blockchain. The contract has token details like token name, token abbreviation and total supply. The contract is also having mapping variable and name of this mapping variable is accountBalance.  
+MyToken is a basic Solidity smart contract that lets you create and manage your own custom token on the Ethereum blockchain. The contract has token details like token name, token abbreviation and total supply. The contract is also having mapping variable and name of this mapping variable is accountBalance that maps an address to a balance. This keeps track of how many tokens each address has.  
 The contract has two functions : 
-(i) mint: This function will increase the total supply and recipient’s balance. 
-(ii) burn: This function will decrease the total supply and sender’s balance. 
-These functions are having parameters which are _address and _value. 
+(i) mint: This function will increase the total supply and recipient’s balance. This function has parameters which are _address and _value. _address is the address to which tokens will be minted and _value is the number of tokens to mint. 
+(ii) burn: This function will decrease the total supply and sender’s balance.  This function has parameters which are _address and _value. _address is the address from which tokens will be burned and _value is the number of tokens to burn. 
+ 
 
 ## Getting Started 
 
