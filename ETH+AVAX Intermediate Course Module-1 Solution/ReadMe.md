@@ -1,56 +1,65 @@
 # ETH+AVAX Intermediate Course Module-1 Solution
 ## Understanding require, assert, and revert functions
-This Solidity program is a “MyToken” program that shows how to use require, assert, and revert functions.
+This Solidity program is a “Vote” program that shows how to use require, assert, and revert functions.
 ## Description
-MyToken is a basic Solidity smart contract that lets you create and manage your own custom token on the Ethereum blockchain. The contract has token details like token name, token abbreviation and total supply. The contract is also having mapping variable and name of this mapping variable is accountBalance that maps an address to a balance. This keeps track of how many tokens each address has.
-The contract has two functions : 
-(i) mint: This function will increase the total supply and recipient’s balance. This function has parameters which are _address and _value. _address is the address to which tokens will be minted and _value is the number of tokens to mint. In the mint function, 'require' function makes sure that the number of tokens to add is more than 0. 
-(ii) burn: This function will decrease the total supply and sender’s balance. This function has parameters which are _address and _value. _address is the address from which tokens will be burned and _value is the number of tokens to burn. In the burn function, 'require' function makes sure that the number of tokens to remove is more than 0 and that the user has enough tokens. In the burn function, 'revert' function checks for errors like trying to burn more tokens than the user has and stops the function if there is a problem. In both mint and burn functions, 'assert' function checks that the balances and total supply are updated correctly.
+This smart contract lets people register as voters, check voter status, and remove voters.
+This contract has three functions:-
+1. enrollVoter: People can sign up as voters by giving their age, name, and a unique ID. Voters must be older than 17. Each voter ID must be unique and not used before.
+2. voterStatus: You can check if an address is registered as a voter.
+3. removeVoter: Registered voters can be removed from the list. This process frees up the used ID and marks the voter as not registered.
 ## Getting Started
 ### Executing program
-In order to run the program, you can use Remix, an online Solidity IDE. To get started, go to the Remix website at https://remix.ethereum.org/. Once you are on the Remix website, create a new file by clicking on the "+" icon in the left-hand sidebar. Save the file with a .sol extension (e.g. MyToken.sol). Copy and paste the following code into the file:
+In order to run the program, you can use Remix, an online Solidity IDE. To get started, go to the Remix website at https://remix.ethereum.org/. Once you are on the Remix website, create a new file by clicking on the "+" icon in the left-hand sidebar. Save the file with a .sol extension (e.g. Vote.sol). Copy and paste the following code into the file:
 
 ```  
 pragma solidity ^0.8.18;
-
-contract MyToken {
-
-    string public tokenName = "Gursimar Singh Chahal";
-    string public tokenAbbreviation = "GSC";
-    uint public totalSupply = 0;
-
-    mapping(address => uint) public accountBalance;
-
-    function mint(address _address, uint _value) public {
-        require(_value > 0, "Mint value must be greater than 0");
-        
-        uint previousBalance = accountBalance[_address];
-        totalSupply += _value;
-        accountBalance[_address] += _value;
-
-        assert(accountBalance[_address] == previousBalance + _value);
-        assert(totalSupply >= _value); 
+contract Vote {
+    struct Voter {
+        bool registeredVoter;
+        uint age;
+        string name;
+        uint id; 
     }
 
-    function burn(address _address, uint _value) public {
-        require(_value > 0, "Burn value must be greater than 0");
-        require(accountBalance[_address] >= _value, "Insufficient balance to burn");
+    mapping(address => Voter) public voters;
+    mapping(uint => bool) public usedIds; 
+    address[] public voterAddresses; 
 
-        uint previousBalance = accountBalance[_address];
-        uint newTotalSupply = totalSupply - _value;
-        uint newBalance = accountBalance[_address] - _value;
+    function enrollVoter(uint _age, string memory _name, uint _id) public {
+        require(_age > 17, "Voter must be greater than 17 years of age");
+        require(!usedIds[_id], "ID must be unique");
 
-        if (newTotalSupply > totalSupply || newBalance > previousBalance) {
-            revert("Underflow error detected");
+        if (voters[msg.sender].registeredVoter) {
+            revert("Voter is registered already");
         }
 
-        totalSupply = newTotalSupply;
-        accountBalance[_address] = newBalance;
+        voters[msg.sender] = Voter(true, _age, _name, _id);
+        voterAddresses.push(msg.sender); 
+        usedIds[_id] = true; 
 
-        assert(accountBalance[_address] == previousBalance - _value);
-        assert(totalSupply >= 0); 
+        assert(voters[msg.sender].registeredVoter == true);
+    }
+
+    function voterStatus(address _address) public view returns (bool) {
+        return voters[_address].registeredVoter;
+    }
+
+    function removeVoter(address _address) public {
+        require(voters[_address].registeredVoter, "Voter not registered");
+
+        uint id = voters[_address].id;
+        voters[_address].registeredVoter = false;
+        usedIds[id] = false; 
+
+        for (uint i = 0; i < voterAddresses.length; i++) {
+            if (voterAddresses[i] == _address) {
+                voterAddresses[i] = voterAddresses[voterAddresses.length - 1];
+                voterAddresses.pop();
+                break;
+            }
+        }
     }
 }
 ```  
 
-To compile the code, click on the "Solidity Compiler" tab in the left-hand sidebar and then click on the "Compile MyToken.sol" button. Once the code is compiled, you can deploy the contract by clicking on the "Deploy & Run Transactions" tab in the left-hand sidebar. Select the "MyToken" contract from the dropdown menu, and then click on the "Deploy" button. Once the contract is deployed, you can interact with it by calling the mint and burn functions.
+To compile the code, click on the "Solidity Compiler" tab in the left-hand sidebar and then click on the "Compile Vote.sol" button. Once the code is compiled, you can deploy the contract by clicking on the "Deploy & Run Transactions" tab in the left-hand sidebar. Select the "Vote" contract from the dropdown menu, and then click on the "Deploy" button. Once the contract is deployed, you can interact with it by calling the enrollVoter, voterStatus and removeVoter functions.
