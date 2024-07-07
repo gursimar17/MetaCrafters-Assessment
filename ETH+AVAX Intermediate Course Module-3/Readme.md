@@ -1,11 +1,11 @@
 # GSC Token
 This Solidity program is a “myERC20Token” program. The objective of this solidity program is to create a customizable ERC20 token. The GSC Token is a digital token named "Gursimar Singh Chahal" with the symbol "GSC". This contract allows the owner to create new tokens, users to transfer tokens, and anyone to destroy their tokens.
 ## Description & Features
-Token Name: Gursimar Singh Chahal
-Token Symbol: GSC
-Minting: Only the contract owner can create new tokens.
-Transferring: Users can send tokens to others.
-Burning: Users can destroy their own tokens.
+Token Name: Gursimar Singh Chahal,
+Token Symbol: GSC,
+Minting: Only the contract owner can create new tokens,
+Transferring: Users can send tokens to others,
+Burning: Users can destroy their own tokens,
 Ownership: The contract owner has special permissions.
 ## Getting Started
 ### Executing program
